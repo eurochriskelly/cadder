@@ -17,29 +17,48 @@
 ;; The second pont x-position should be -10
 ;; The construction line is drawn from the first point to the second point
 (defun create-line (horizontal)
-  (setq oldsnap (getvar "OSMODE")) ; Save current snap settings
-  (setvar "OSMODE" 0) ; Disable snap settings
+  ; Save current snap settings
+  (setq oldsnap (getvar "OSMODE"))
 
-  (setq oldLayer (getvar "CLAYER")) ; Save current layer
+  ; Save current layer
+  (setq oldLayer (getvar "CLAYER")) 
   (setq layerName "x-lines") ; Layer name
 
+  ; Create layer if it doesn't exist
   (if (not (tblsearch "LAYER" layerName))
-    (command "._-LAYER" "N" layerName "" "")) ; Create layer if it doesn't exist
-  
-  (command "._-LAYER" "S" layerName "") ; Set current layer to 'x-lines'
-  
-  (setq pt1 (getpoint "\nSpecify the position for x-line "))
-  
-  (if horizontal
-    (setq pt2 (list 0 (cadr pt1) 0)) ; Horizontal line start point
-    (setq pt2 (list (car pt1) 0 0)) ; Vertical line start point
-  )
-  
-  (command "._XLINE" pt1 pt2 "") ; Draw the xline
+    (command "._-LAYER" "N" layerName "" "")) 
 
-  (setvar "CLAYER" oldLayer) ; Restore previous layer
-  (setvar "OSMODE" oldsnap) ; Restore snap settings
+  ; Set current layer to 'x-lines'
+  (command "._-LAYER" "S" layerName "") 
+
+  ; Ask user to specify the position for x-line
+  (setq pt1 (getpoint "\nSpecify the position for x-line "))
+
+  ; Continue asking for points until user cancels or presses Enter
+  (while pt1
+    (if horizontal
+      (setq pt2 (list 0 (cadr pt1) 0)) ; Horizontal line start point
+      (setq pt2 (list (car pt1) 0 0)) ; Vertical line start point
+    )
+
+    ; Disable snap settings for drawing
+    (setvar "OSMODE" 0) 
+
+    ; Draw the xline
+    (command "._XLINE" pt1 pt2 "") 
+
+    ; Restore snap settings
+    (setvar "OSMODE" oldsnap)
+
+    ; Ask for the next point
+    (setq pt1 (getpoint "\nSpecify the position for x-line (Press Enter to finish): "))
+  )
+
+  ; Restore previous layer and snap settings
+  (setvar "CLAYER" oldLayer) 
+  (setvar "OSMODE" oldsnap) 
 )
+
 
 
 (defun c:hh ()
