@@ -33,19 +33,18 @@
   (princ)
 )
 
-
 ;; Like git stash pop, this will pop the last stashed block and explode it
 (defun c:stashpop ()
   (setq maxnum 0 blkname "")
   (setq blkdef (tblnext "BLOCK" T))
   (while blkdef
     (prompt (strcat "\nChecking block: " (cdr (assoc 2 blkdef)))) ; Debugging print
-    (if (wcmatch (strcase (cdr (assoc 2 blkdef)) T) "STASHED-*")
+    (if (wcmatch (strcase (cdr (assoc 2 blkdef)) T) "stashed-*")
       (progn
         (prompt (strcat "\nStashed block found: " (cdr (assoc 2 blkdef)))) ; Debugging print
-        (if (> (atoi (substr (cdr (assoc 2 blkdef)) 8)) maxnum)
+        (if (> (atoi (substr (cdr (assoc 2 blkdef)) 9)) maxnum)
           (progn
-            (setq maxnum (atoi (substr (cdr (assoc 2 blkdef)) 8)))
+            (setq maxnum (atoi (substr (cdr (assoc 2 blkdef)) 9)))
             (setq blkname (cdr (assoc 2 blkdef)))
           )
         )
@@ -64,5 +63,5 @@
   )
   (princ)
 )
-
-
+;; Create alias c:unstash for c:stashpop
+(defun c:unstash () (c:stashpop))
