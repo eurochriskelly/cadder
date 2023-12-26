@@ -1,5 +1,6 @@
 (setq *dir* (strcat (getenv "HOME") "/Workspace/repos/cadder/src/"))
-(load (strcat *dir* "x-lines.lsp")) ; Provide the full path for "utils.lsp"
+(load (strcat *dir* "x-lines.lsp"))
+(load (strcat *dir* "stash.lsp"))
 
 ;; convenience function to re-load cadder.lsp
 (defun c:src ()
