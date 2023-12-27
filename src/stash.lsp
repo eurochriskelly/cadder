@@ -5,12 +5,12 @@
 
 ;; Stash the current selection set as a block
 (defun c:stash ()
-  (princ "\n ========== STASHING ===========")
   (setq selset (ssget))
   (if selset
     (progn
       (setq maxnum 1)
       (setq blkdef (tblnext "BLOCK" T))
+
       (while blkdef
         (setq nextblk (strcase (cdr (assoc 2 blkdef)) T))
         (if (wcmatch nextblk "stashed-*")
@@ -38,10 +38,8 @@
   (setq maxnum 0 blkname "")
   (setq blkdef (tblnext "BLOCK" T))
   (while blkdef
-    (prompt (strcat "\nChecking block: " (cdr (assoc 2 blkdef)))) ; Debugging print
     (if (wcmatch (strcase (cdr (assoc 2 blkdef)) T) "stashed-*")
       (progn
-        (prompt (strcat "\nStashed block found: " (cdr (assoc 2 blkdef)))) ; Debugging print
         (if (> (atoi (substr (cdr (assoc 2 blkdef)) 9)) maxnum)
           (progn
             (setq maxnum (atoi (substr (cdr (assoc 2 blkdef)) 9)))
@@ -52,7 +50,6 @@
     )
     (setq blkdef (tblnext "BLOCK"))
   )
-  (prompt (strcat "\nMost recent stashed block: " blkname)) ; Debugging print
   (if (/= blkname "")
     (progn
       (command "_insert" blkname "0,0" 1 1 0)
