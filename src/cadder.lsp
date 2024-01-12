@@ -1,6 +1,7 @@
 (setq *dir* (strcat (getenv "HOME") "/Workspace/repos/cadder/src/"))
 (load (strcat *dir* "x-lines.lsp"))
 (load (strcat *dir* "stash.lsp"))
+(load (strcat *dir* "utils/offsets.lsp"))
 
 ;; convenience function to re-load cadder.lsp
 (defun c:src ()
