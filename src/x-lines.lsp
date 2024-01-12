@@ -16,36 +16,37 @@
 ;; The first point x-position should be 0
 ;; The second pont x-position should be -10
 ;; The construction line is drawn from the first point to the second point
-(defun create-line (horizontal)
+(defun create-line (horizontal) 
   ; Save current snap settings
   (setq oldsnap (getvar "OSMODE"))
 
   ; Save current layer
-  (setq oldLayer (getvar "CLAYER")) 
+  (setq oldLayer (getvar "CLAYER"))
   (setq layerName "x-lines") ; Layer name
 
   ; Create layer if it doesn't exist
-  (if (not (tblsearch "LAYER" layerName))
-    (command "._-LAYER" "N" layerName "" "")) 
+  (if (not (tblsearch "LAYER" layerName)) 
+    (command "._-LAYER" "N" layerName "" "")
+  )
 
   ; Set current layer to 'x-lines'
-  (command "._-LAYER" "S" layerName "") 
+  (command "._-LAYER" "S" layerName "")
 
   ; Ask user to specify the position for x-line
   (setq pt1 (getpoint "\nSpecify the position for x-line "))
 
   ; Continue asking for points until user cancels or presses Enter
-  (while pt1
-    (if horizontal
+  (while pt1 
+    (if horizontal 
       (setq pt2 (list 0 (cadr pt1) 0)) ; Horizontal line start point
       (setq pt2 (list (car pt1) 0 0)) ; Vertical line start point
     )
 
     ; Disable snap settings for drawing
-    (setvar "OSMODE" 0) 
+    (setvar "OSMODE" 0)
 
     ; Draw the xline
-    (command "._XLINE" pt1 pt2 "") 
+    (command "._XLINE" pt1 pt2 "")
 
     ; Restore snap settings
     (setvar "OSMODE" oldsnap)
@@ -55,31 +56,46 @@
   )
 
   ; Restore previous layer and snap settings
-  (setvar "CLAYER" oldLayer) 
-  (setvar "OSMODE" oldsnap) 
+  (setvar "CLAYER" oldLayer)
+  (setvar "OSMODE" oldsnap)
 )
 
-
-
-(defun c:hh ()
-  (create-line T) ; Horizontal line
+(defun create-x-line (horizontal) 
+  (savars '("CLAYER"))
+  (MAKELAYER (setq layname "x-lines") 249 "CONTINUOUS")
+  (while (setq p1 (getpoint "\nPick point for Horizontal XLINE: ")) 
+    (SNAP-TOGGLE NIL)
+    (setvar "CLAYER" "x-lines")
+    (command "XLINE" 
+             p1
+             (if horizontal
+               (pt-trans p1 10000 0 0)
+               (pt-trans p1 0 10000 0)
+             )
+             ""
+    )
+    (SNAP-TOGGLE T)
+  )
+  (revars)
 )
 
-(defun c:vv ()
-  (create-line nil) ; Vertical line
-)
+(defun c:hh (/ p1) (create-x-line T))   ; Horizontal line
+(defun c:vv (/ p1) (create-x-line nil)) ; Vertical line
 
-(defun c:xx-del (/ layer_name ss)
+(defun c:hh2 () (create-line T))   ; Horizontal line
+(defun c:vv2 () (create-line nil)) ; Vertical line
+
+(defun c:xx-del (/ layer_name ss) 
   (setq layer_name "x-lines")
-  
+
   ; Select all entities on the specified layer
   (setq ss (ssget "X" (list (cons 8 layer_name))))
 
   ; Check if any entities are found
-  (if ss
-    (progn
+  (if ss 
+    (progn 
       ; Iterate over the selection set and erase each entity
-      (foreach ent (mapcar 'cadr (ssnamex ss))
+      (foreach ent (mapcar 'cadr (ssnamex ss)) 
         (command "_.erase" ent "")
       )
       (princ (strcat "\nDeleted all entities on layer: " layer_name))
@@ -88,7 +104,3 @@
   )
   (princ)
 )
-
-
-
-(princ "\nLoaded utils.lsp")

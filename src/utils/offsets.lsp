@@ -25,14 +25,13 @@
           (entmod objData)
         )
       )
-
       (princ)
     )
   )
 )
 
 ; List of allowed distances
-(setq distances '(5 10 20 25 30 75 50 100 150 200 250 300 350 400 450 500 550 600 750 900 1000 1500 1600 1800 2000 2500))
+(setq distances '(5 10 20 25 30 75 50 100 150 200 250 300 350 400 450 500 550 600 700 750 900 1000 1400 1500 1600 1800 2000 2500))
 
 ; Loop through the distances to create commands
 (foreach dist distances
