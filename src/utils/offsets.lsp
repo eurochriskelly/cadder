@@ -10,7 +10,22 @@
 (defun offset-by-distance (distance)
   (if distance
     (progn
+      ; Perform the offset
       (offset distance (car (entsel)) (getpoint "\nPick point on side"))
+
+      ; Get the last created object (the offset object)
+      (setq lastObj (entlast))
+
+      ; Change the layer of the last created object to current layer
+      (if lastObj
+        (progn
+          (setq currentLayer (getvar "clayer"))
+          (setq objData (entget lastObj))
+          (setq objData (subst (cons 8 currentLayer) (assoc 8 objData) objData))
+          (entmod objData)
+        )
+      )
+
       (princ)
     )
   )
