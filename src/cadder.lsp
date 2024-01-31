@@ -15,8 +15,10 @@
   )
 )
 
-(setq file-list '("utils/generic" "utils/drawing" "utils/offsets" 
-                  "utils/points" "x-lines" "stash"
+(setq file-list '("utils/generic" "utils/drawing"
+                  "utils/offsets" "utils/utils"
+                  "utils/points" "utils/wkt"
+                  "x-lines" "stash"
                  )
 )
 (load-files file-list)
