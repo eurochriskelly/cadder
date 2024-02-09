@@ -1,0 +1,5 @@
+* Git-like workflow for CAD
+
+git stash  - "hide" the selected entities in a block
+git commit - saves the current file in a checksummed version (requires message)
+git diff   - highlights changes between this version and the previous saved version
