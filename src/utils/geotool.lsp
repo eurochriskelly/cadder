@@ -1,8 +1,23 @@
-(defun c:pts2circ()
+;; Insert circles of a given dimension on points on the current layer
+(defun c:geocircles()
   ;; Ask user for radius
-  (setq rad (getreal "Enter radius (e.g. 250) "))
+  ;; todo: take the radius from the suffix part of the current layer if its selected
+  (setq layername (getvar "clayer"))
+  ;; Layer name could be somethin like foo-bar-1020... the last part is the default radius
+  ;; It must be the last part of the tokenized string
+  (setq tokens (strtok layername "-"))
+  (setq rad (car (last tokens)))
+
+  ; Convert default value to string and create prompt message
+  (setq prompt (strcat "Enter radius [" (rtos rad) "]: "))
+  (setq input (getstring prompt))
+  (if (null input)
+    (setq result rad)
+    (setq result (atof input))
+  )
   ;; Get selection of points from user
   (setq ptlist (ssget '((0 . "POINT"))))
+  ;; todo: default selection to all points on current layer
   (setq pts (ptlist-ss-getpts ptlist))
   ;; store old object snap mode
   (princ pts)
@@ -10,13 +25,14 @@
   ;; Turn off object snap
   (setvar "osmode" 0)
   ;; loop over all points and insert with radius 0.1
-  (foreach pt pts
-    (command "circle" pt (* rad 25.4)) ; add 2.7 factor
-  )
+
+  (foreach pt pts (command "circle" pt (* rad 25.4)))
   ;; reset object snap mode
   (setvar "osmode" oldosmode)
-  (princ)
-)
+  (geofix)
+  (princ))
+
+
 
 (defun c:geoin () 
   ;; import the file ~/Downloads/tmp.dxf into the drawing at point 0,0
@@ -38,22 +54,17 @@
   ; purge the block
   (command "_.PURGE" "B" "tmp" "N")
   ; regen
-  (princ)
-  )
+  (princ))  
 
 (defun c:geofix() 
   ;; zoom extents
   (command "_.ZOOM" "_E")
   ;; move all circles to back using draworder
-  (moveCirclesToBack)
-  )
-
-
+  (moveCirclesToBack))
 
 (defun moveCirclesToBack ()
   ; Select all circles in the drawing
   (ssget "X" '((0 . "CIRCLE")))
   ; Apply the DRAWORDER command, moving selected circles to back
   (command "_.DRAWORDER" "" "B")
-  (princ)
-)
+  (princ))
