@@ -11,7 +11,7 @@
   (setvar "osmode" 0)
   ;; loop over all points and insert with radius 0.1
   (foreach pt pts
-    (command "circle" pt (/ rad 2700)) ; add 2.7 factor
+    (command "circle" pt (* rad 25.4)) ; add 2.7 factor
   )
   ;; reset object snap mode
   (setvar "osmode" oldosmode)
@@ -21,9 +21,11 @@
 (defun c:geoin () 
   ;; import the file ~/Downloads/tmp.dxf into the drawing at point 0,0
   (command "_.insert" "/Users/chkelly/Downloads/tmp.dxf" '(0 0) 1 1 0)
-  (setvar "pdsize" 0)
+  (setvar "pdsize" 2000)
   (setvar "pdmode" 3)
   ; Create layers subs-500, subs-500-circ, region, subs-250, subs-250-circ
+  (command "_.layer" "_N" "active-area" "")
+  (command "_.layer" "_N" "sea" "")
   (command "_.layer" "_N" "subs-1000" "")
   (command "_.layer" "_N" "subs-1000-circ" "")
   (command "_.layer" "_N" "subs-500" "")
