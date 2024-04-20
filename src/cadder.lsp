@@ -17,7 +17,7 @@
 
 (setq file-list '("utils/generic" "utils/drawing"
                   "utils/offsets" "utils/utils"
-                  "utils/points" "utils/wkt" "utils/geotool"
+                  "utils/points" "utils/wkt" "utils/geotool" "utils/blockedit"
                   "x-lines" "stash"
                  )
 )
